@@ -1,0 +1,7 @@
+- Practice project for reading 《Javascript Everywhere》
+- topics includes
+  - nodejs dev with express, graphQL and more
+  - platform-crossing dev
+    - electron (for desktop)
+    - react native ( for mobile devices )
+    - react (for web)

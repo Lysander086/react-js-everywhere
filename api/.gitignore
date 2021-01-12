@@ -5,6 +5,9 @@ logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+archivez/
+final_/
+solutions_/
 
 # Runtime data
 pids
