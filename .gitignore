@@ -8,6 +8,9 @@ unpackage/
 wxcomponents/**/*.vue
 wxcomponents/**/*.css
 
+**/final_
+**/solutions_
+
 .idea
 ### Node ###
 # Logs
