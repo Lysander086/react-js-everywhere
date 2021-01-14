@@ -1,18 +1,24 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React from "react";
+import ReactDOM from "react-dom";
 
-import GlobalStyle from '/components/GlobalStyle';
+import { ApolloProvider, ApolloClient, InMemoryCache } from "@apollo/client";
 
-// import our routes
-import Pages from '/pages';
+import GlobalStyle from "./components/GlobalStyle";
 
-const App = () => {
-  return (
-    <div>
-      <GlobalStyle />
-      <Pages />
-    </div>
-  );
-};
+import Pages from "./pages";
 
-ReactDOM.render(<App />, document.getElementById('root'));
+const uri = process.env.API_URI;
+
+const cache = new InMemoryCache();
+
+const client = new ApolloClient({
+  uri, cache, connectToDevTools: true
+});
+const App = () => (
+  <ApolloProvider client={client}>
+    <GlobalStyle />
+    <Pages />
+  </ApolloProvider>
+);
+
+ReactDOM.render(<App/>, document.getElementById("root"));

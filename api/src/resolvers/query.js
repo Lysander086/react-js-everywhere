@@ -6,7 +6,7 @@ module.exports = {
     return await models.Note.findById(args.id);
   },
   user: async (parent, args, { models }) => {
-    return await models.User.findOne({ username: args.username });
+    return models.User.findOne({ username: args.username });
   },
   users: async (parent, args, { models }) => {
     return await models.User.find({}).limit(100);
@@ -42,12 +42,27 @@ module.exports = {
     }
 
     // the new cursor will be the Mongo ObjectID of the last item in the feed array
-    const newCursor = notes[notes.length - 1]._id;
+    // let newCursor,emptyMessage = 'no note before '+ cursor;
+    // if (notes.length>=1)
+    //   newCursor = notes[notes.length - 1]._id;
+
+    // the new cursor will be the Mongo ObjectID of the last item in the feed array
+    let newCursor;
+    if (notes.length >= 1)
+      newCursor = notes[notes.length - 1]._id;
+
 
     return {
       notes,
-      cursor: newCursor,
-      hasNextPage
+      cursor: newCursor || "empty",
+      hasNextPage,
     };
-  }
+  },
+  hello: () => "hi world",
+  checkContext: async (parent, {}, { models, user }) => {
+    console.log('parent: ', parent);
+    return {
+      parent:parent, models, user
+    };
+  },
 };

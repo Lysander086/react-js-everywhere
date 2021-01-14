@@ -1,30 +1,47 @@
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const {
   AuthenticationError,
   ForbiddenError
-} = require('apollo-server-express');
-const mongoose = require('mongoose');
-require('dotenv').config();
+} = require("apollo-server-express");
+const mongoose = require("mongoose");
+require("dotenv").config();
 
-const gravatar = require('../util/gravatar');
+const gravatar = require("../util/gravatar");
 
 module.exports = {
   newNote: async (parent, args, { models, user }) => {
     if (!user) {
-      throw new AuthenticationError('You must be signed in to create a note');
+      throw new AuthenticationError("You must be signed in to create a note");
     }
-
-    return await models.Note.create({
+    let author = mongoose.Types.ObjectId(user.id);
+    // console.log('author: ',author,user);
+    let note = await models.Note.create({
       content: args.content,
-      author: mongoose.Types.ObjectId(user.id),
+      author,
       favoriteCount: 0
     });
+    console.log("note: ", note);
+    return note;
+  },
+
+  deleteAllnotes: async (parent, {}, { models, user }) => {
+    // if not a user, throw an Authentication Error
+    if (!user) {
+      throw new AuthenticationError("You must be signed in to delete ntoes");
+    }
+
+    const res = await models.Note.deleteMany({});
+    console.log(res);
+    return {
+      ...res,
+      message: "success"
+    };
   },
   deleteNote: async (parent, { id }, { models, user }) => {
     // if not a user, throw an Authentication Error
     if (!user) {
-      throw new AuthenticationError('You must be signed in to delete a note');
+      throw new AuthenticationError("You must be signed in to delete a note");
     }
 
     // find the note
@@ -46,7 +63,7 @@ module.exports = {
   updateNote: async (parent, { content, id }, { models, user }) => {
     // if not a user, throw an Authentication Error
     if (!user) {
-      throw new AuthenticationError('You must be signed in to update a note');
+      throw new AuthenticationError("You must be signed in to update a note");
     }
 
     // find the note
@@ -57,7 +74,7 @@ module.exports = {
     }
 
     // Update the note in the db and return the updated note
-    return await models.Note.findOneAndUpdate(
+    return models.Note.findOneAndUpdate(
       {
         _id: id
       },
@@ -137,7 +154,7 @@ module.exports = {
       return jwt.sign({ id: user._id }, process.env.JWT_SECRET);
     } catch (err) {
       // if there's a problem creating the account, throw an error
-      throw new Error('Error creating account');
+      throw new Error("Error creating account");
     }
   },
 
@@ -146,19 +163,20 @@ module.exports = {
       // normalize email address
       email = email.trim().toLowerCase();
     }
+
     const user = await models.User.findOne({
       $or: [{ email }, { username }]
     });
 
     // if no user is found, throw an authentication error
     if (!user) {
-      throw new AuthenticationError('Error signing in');
+      throw new AuthenticationError("Error signing in");
     }
 
     // if the passwords don't match, throw an authentication error
     const valid = await bcrypt.compare(password, user.password);
     if (!valid) {
-      throw new AuthenticationError('Error signing in');
+      throw new AuthenticationError("Error signing in");
     }
 
     // create and return the json web token

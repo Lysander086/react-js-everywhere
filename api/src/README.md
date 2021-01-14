@@ -1,8 +1,9 @@
 # JavaScript Everywhere API Solutions
 
-> API code example solutions for JavaScript Everywhere by Adam Scott, published by O'Reilly Media
+> The completed API code example for JavaScript Everywhere by Adam Scott, published by O'Reilly Media
 
-This directory contains chapter by chapter solutions for the code examples found in the book. For the starter project, visit the `/src` directory and for the final project, visit `/final`.
+This directory contains the final API example found in the book. For the starter project, visit the `/src` directory and for chapter by chapter solutions, visit `/solutions`.
+
 
 ## Getting Help
 
