@@ -15,8 +15,8 @@ module.exports = {
     return await models.User.findById(user.id);
   },
   noteFeed: async (parent, { cursor }, { models }) => {
-    // hard code the limit to 10 items
-    const limit = 10;
+    // hard code the limit to 3 items
+    const limit = 3;
     // set the default hasNextPage value to false
     let hasNextPage = false;
     // if no cursor is passed the default query will be empty

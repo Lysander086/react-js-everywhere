@@ -1,8 +1,8 @@
-// import React and our routing dependencies
+// import React and routing dependencies
 import React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 
-// import our shared layout component
+// import shared layout component
 import Layout from '../components/Layout';
 
 // import routes
@@ -11,10 +11,11 @@ import MyNotes from './mynotes';
 import Favorites from './favorites';
 import NotePage from './note';
 
+
 import SignUp from "./signup";
 
-// define our routes
-const Pages = props => {
+// define routes
+const Pages = (props) => {
   return (
     <Router>
       <Layout>

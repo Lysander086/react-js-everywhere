@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
-
 import { format } from 'date-fns';
+import styled from 'styled-components';
 
 // Keep notes from extending wider than 800px
 const StyledNote = styled.article`
@@ -14,7 +14,7 @@ const MetaData = styled.div`
   @media (min-width: 500px) {
     display: flex;
     align-items: top;
-  }
+   }
 `;
 
 // add some space between the avatar and meta info

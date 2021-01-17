@@ -40,6 +40,7 @@ const Home = () => {
       <NoteFeed notes={data.noteFeed.notes} />
       {/* Only display the Load More button if hasNextPage is true */}
       {data.noteFeed.hasNextPage && (
+        //  onClick peform a query, passing the current cursor as a variable
         <Button
           onClick={() =>
             fetchMore({
