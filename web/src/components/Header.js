@@ -1,6 +1,20 @@
 import React from 'react';
 import styled from 'styled-components';
 import logo from '../img/logo.svg';
+// new dependencies
+import { useQuery, gql } from '@apollo/client';
+import { Link } from 'react-router-dom';
+
+// local query
+const IS_LOGGED_IN = gql`
+  {
+    isLoggedIn @client
+  }
+`;
+
+const UserState = styled.div`
+  margin-left: auto;
+`;
 
 const HeaderBar = styled.header`
   width: 100%;
@@ -20,11 +34,25 @@ const LogoText = styled.h1`
   display: inline;
 `;
 
-const Header = () => {
+const Header = props => {
+  // query hook for user logged in state
+  const { data } = useQuery(IS_LOGGED_IN);
+
   return (
     <HeaderBar>
       <img src={logo} alt="Notedly Logo" height="40" />
       <LogoText>Notedly</LogoText>
+      {/* If logged in display a logout link, else display sign-in options */}
+      <UserState>
+        {data.isLoggedIn ? (
+          <p>Log Out</p>
+        ) : (
+          <p>
+            <Link to={'/signin'}>Sign In</Link> or{' '}
+            <Link to={'/signup'}>Sign Up</Link>
+          </p>
+        )}
+      </UserState>
     </HeaderBar>
   );
 };

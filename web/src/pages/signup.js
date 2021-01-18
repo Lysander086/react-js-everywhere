@@ -49,15 +49,21 @@ const SignUp = props => {
     document.title = 'Sign Up — Notedly';
   });
 
+  //  Apollo Client
+  const client = useApolloClient()
+
   /** doc link: https://www.apollographql.com/docs/react/data/mutations/
    *   When your component renders, useMutation returns a tuple that includes:
-   *   - A mutate function
-   *   - An object with fields that represent the current status of the mutation's execution
+   *   - A mutate function:  that you can call at any time to execute the mutation
+   *   - An object with fields:  that represent the current status of the mutation's execution
    */
   const [signUp, { loading, error }] = useMutation(SIGNUP_USER, {
     onCompleted: data => {
       //  add mutation hook
-      console.log(data, data.signUp);
+      // store the JWT in localStorage
+      localStorage.setItem('token', data.signUp); //  might be susceptible xss .For this reason, when using localStorage to store token credentials, you need to take extra care to limit (or avoid) CDN hosted scripts.
+      // redirect the user to the homepage
+      props.history.push('/');
     }
   });
 
