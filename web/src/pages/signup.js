@@ -3,6 +3,8 @@ import Button from '../components/Button';
 import styled from 'styled-components';
 import { useMutation, useApolloClient, gql } from '@apollo/client';
 
+import UserForm from '../components/UserForm';
+
 const Wrapper = styled.div`
   border: 1px solid #f5f4f0;
   max-width: 500px;
@@ -30,86 +32,31 @@ const SIGNUP_USER = gql`
 `;
 
 // include the props passed to the component for later use
-const SignUp = props => {
-  // set the default state of the form
-  //   useState, onChange, and useEffect all remain the same here
-  const [values, setValues] = useState();
-
-  // update the state when a user types in the form
-  const onChange = event => {
-    // console.log(values,event.target);
-    setValues({
-      ...values,
-      [event.target.name]: event.target.value
-    });
-  };
-
+const SignUp = (props) => {
   useEffect(() => {
     // update the document title
     document.title = 'Sign Up — Notedly';
   });
-
   //  Apollo Client
-  const client = useApolloClient()
 
-  /** doc link: https://www.apollographql.com/docs/react/data/mutations/
-   *   When your component renders, useMutation returns a tuple that includes:
-   *   - A mutate function:  that you can call at any time to execute the mutation
-   *   - An object with fields:  that represent the current status of the mutation's execution
-   */
+  const client = useApolloClient();
+
   const [signUp, { loading, error }] = useMutation(SIGNUP_USER, {
-    onCompleted: data => {
-      //  add mutation hook
-      // store the JWT in localStorage
-      localStorage.setItem('token', data.signUp); //  might be susceptible xss .For this reason, when using localStorage to store token credentials, you need to take extra care to limit (or avoid) CDN hosted scripts.
-      // redirect the user to the homepage
+    onCompleted: (data) => {
+      //  store the token
+      localStorage.setItem('token', data.signUp);
+
+      client.writeData({ data: { isLoggedIn: true } });
       props.history.push('/');
-    }
+    },
   });
 
-  // render our form
   return (
-    <Wrapper>
-      <h2>Sign Up</h2>
-      {/* pass the form data to the mutation when a user submits the form */}
-      <Form
-        onSubmit={event => {
-          event.preventDefault();
-          signUp({
-            variables: {
-              ...values
-            }
-          });
-        }}
-      >
-        {/* ... the rest of the form remains unchanged ... */}
-        <label htmlFor="username">Username:</label>
-        <input
-          required
-          type="text"
-          name="username"
-          placeholder="username"
-          onChange={onChange}
-        />
-        <label htmlFor="email">Email:</label>
-        <input
-          required
-          type="email"
-          name="email"
-          placeholder="Email"
-          onChange={onChange}
-        />
-        <label htmlFor="password">Password:</label>
-        <input
-          required
-          type="password"
-          name="password"
-          placeholder="Password"
-          onChange={onChange}
-        />
-        <Button type="submit">Submit</Button>
-      </Form>
-    </Wrapper>
+    <React.Fragment>
+      <UserForm action={signUp} formType="signup" />
+      {loading && <p>Loading...</p>}
+      {error && <p>Error creating an account.</p>}
+    </React.Fragment>
   );
 };
 

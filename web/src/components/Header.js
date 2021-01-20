@@ -2,8 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 import logo from '../img/logo.svg';
 // new dependencies
-import { useQuery, gql } from '@apollo/client';
-import { Link } from 'react-router-dom';
+import { gql, useQuery } from '@apollo/client';
+// import both Link and withRouter from React Router
+import { Link, withRouter } from 'react-router-dom';
+// import the ButtonAsLink component
+import ButtonAsLink from './ButtonAsLink';
 
 // local query
 const IS_LOGGED_IN = gql`
@@ -35,8 +38,8 @@ const LogoText = styled.h1`
 `;
 
 const Header = props => {
-  // query hook for user logged in state
-  const { data } = useQuery(IS_LOGGED_IN);
+  // query hook for user logged in state, including the client for referencing the Apollo store
+  const { data, client } = useQuery(IS_LOGGED_IN);
 
   return (
     <HeaderBar>
@@ -45,7 +48,20 @@ const Header = props => {
       {/* If logged in display a logout link, else display sign-in options */}
       <UserState>
         {data.isLoggedIn ? (
-          <p>Log Out</p>
+          <ButtonAsLink
+            onClick={() => {
+              //  remove token
+              localStorage.removeItem('token');
+              // clear the application's cache
+              client.resetStore();
+              // update local state
+              client.writeData({ data: { isLoggedIn: false } });
+              // redirect the user to the home page
+              props.history.push('/');
+            }}
+          >
+            Logout
+          </ButtonAsLink>
         ) : (
           <p>
             <Link to={'/signin'}>Sign In</Link> or{' '}
@@ -57,4 +73,5 @@ const Header = props => {
   );
 };
 
-export default Header;
+// to Include routing in a component that is not itself directly routable, we wrap our component in the withRouter higher-order component
+export default withRouter(Header);
